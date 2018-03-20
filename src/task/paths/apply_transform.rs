@@ -31,7 +31,7 @@ pub fn apply_transform(path: &mut Path, ts: &Transform) {
     // Only proportional scale is supported.
     debug_assert!(sx.fuzzy_eq(&sy));
 
-    for seg in &mut path.d {
+    for seg in path.iter_mut() {
         match *seg.data_mut() {
               SegmentData::MoveTo { ref mut x, ref mut y }
             | SegmentData::LineTo { ref mut x, ref mut y }

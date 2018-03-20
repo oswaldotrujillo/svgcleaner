@@ -193,7 +193,7 @@ fn resolve_attribute(node: &Node, id: AId, def_value: Option<AttributeValue>)
         return node.attributes().get_value(id).cloned();
     }
 
-    match node.attributes().get_value(AId::XlinkHref) {
+    match node.attributes().get_value(("xlink", AId::Href)) {
         Some(av) => {
             match *av {
                 AttributeValue::Link(ref ref_node) => resolve_attribute(ref_node, id, def_value),
@@ -289,8 +289,8 @@ mod rg_tests {
         gradientTransform='translate(10 20)' gradientUnits='userSpaceOnUse' r='5' \
         spreadMethod='repeat'/>
     <radialGradient id='rg2' cx='10' cy='20' fx='30' fy='40' \
-        gradientTransform='translate(10 20)' gradientUnits='userSpaceOnUse' r='5' \
-        spreadMethod='repeat' xlink:href='#rg1'/>
+        gradientTransform='translate(10 20)' gradientUnits='userSpaceOnUse' xlink:href='#rg1' \
+        r='5' spreadMethod='repeat'/>
 </svg>
 ");
 
@@ -307,11 +307,11 @@ mod rg_tests {
         gradientTransform='translate(10 20)' gradientUnits='userSpaceOnUse' r='5' \
         spreadMethod='repeat'/>
     <radialGradient id='rg2' cx='10' cy='20' fx='30' fy='40' \
-        gradientTransform='translate(10 20)' gradientUnits='userSpaceOnUse' r='5' \
-        spreadMethod='repeat' xlink:href='#rg1'/>
+        gradientTransform='translate(10 20)' gradientUnits='userSpaceOnUse' xlink:href='#rg1' \
+        r='5' spreadMethod='repeat'/>
     <radialGradient id='rg3' cx='10' cy='20' fx='30' fy='40' \
-        gradientTransform='translate(10 20)' gradientUnits='userSpaceOnUse' r='5' \
-        spreadMethod='repeat' xlink:href='#rg2'/>
+        gradientTransform='translate(10 20)' gradientUnits='userSpaceOnUse' xlink:href='#rg2' \
+        r='5' spreadMethod='repeat'/>
 </svg>
 ");
 
@@ -324,7 +324,7 @@ mod rg_tests {
     <radialGradient id='rg1' cx='10' cy='20' fx='10' fy='20' \
         gradientUnits='objectBoundingBox' r='5' spreadMethod='pad'/>
     <radialGradient id='rg2' cx='10' cy='30' fx='10' fy='30' \
-        gradientUnits='objectBoundingBox' r='5' spreadMethod='pad' xlink:href='#rg1'/>
+        gradientUnits='objectBoundingBox' xlink:href='#rg1' r='5' spreadMethod='pad'/>
 </svg>
 ");
 
@@ -338,11 +338,11 @@ mod rg_tests {
 </svg>",
 "<svg>
     <radialGradient id='rg2' cx='10' cy='30' fx='10' fy='30' \
-        gradientUnits='objectBoundingBox' r='5' spreadMethod='pad' xlink:href='#rg1'/>
+        gradientUnits='objectBoundingBox' xlink:href='#rg1' r='5' spreadMethod='pad'/>
     <radialGradient id='rg3' cx='30' cy='30' fx='30' fy='30' \
-        gradientUnits='objectBoundingBox' r='5' spreadMethod='pad' xlink:href='#rg2'/>
+        gradientUnits='objectBoundingBox' xlink:href='#rg2' r='5' spreadMethod='pad'/>
     <radialGradient id='rg4' cx='40' cy='30' fx='40' fy='30' \
-        gradientUnits='objectBoundingBox' r='5' spreadMethod='pad' xlink:href='#rg2'/>
+        gradientUnits='objectBoundingBox' xlink:href='#rg2' r='5' spreadMethod='pad'/>
     <radialGradient id='rg1' cx='10' cy='20' fx='10' fy='20' \
         gradientUnits='objectBoundingBox' r='5' spreadMethod='pad'/>
 </svg>
@@ -356,7 +356,7 @@ mod rg_tests {
 "<svg>
     <linearGradient id='lg1' gradientUnits='userSpaceOnUse' spreadMethod='repeat' x='5' y='5'/>
     <radialGradient id='rg2' cx='50%' cy='30' fx='50%' fy='30' \
-        gradientUnits='userSpaceOnUse' r='5' spreadMethod='repeat' xlink:href='#lg1'/>
+        gradientUnits='userSpaceOnUse' xlink:href='#lg1' r='5' spreadMethod='repeat'/>
 </svg>
 ");
 }

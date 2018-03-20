@@ -42,7 +42,7 @@ fn process_units(doc: &Document) {
 fn rm_equal(doc: &Document) {
     let mut order = Vec::new();
     for node in doc.descendants().filter(|n|    n.is_gradient()
-                                             && n.has_attribute(AId::XlinkHref)) {
+                                             && n.has_attribute(("xlink", AId::Href))) {
         let c = node.linked_nodes().filter(|n| n.is_gradient()).count();
         // The gradient element and count of gradient elements than uses it.
         order.push((node.clone(), c));
@@ -58,7 +58,7 @@ fn rm_equal(doc: &Document) {
                 // usage depend on the 'count' value and not on the real usage.
                 sub_order.push(node.clone());
 
-                let av = node.attributes().get_value(AId::XlinkHref).cloned();
+                let av = node.attributes().get_value(("xlink", AId::Href)).cloned();
                 if let Some(av) = av {
                     if let AttributeValue::Link(ref link) = av {
                         // If current units is equal to parent units we can remove them.
@@ -76,7 +76,7 @@ fn rm_equal(doc: &Document) {
 
         // Decrease usage count of processed gradients.
         for n in &sub_order {
-            if let Some(av) = n.attributes().get_value(AId::XlinkHref) {
+            if let Some(av) = n.attributes().get_value(("xlink", AId::Href)) {
                 if let AttributeValue::Link(ref link) = *av {
                     for &mut (ref node, ref mut count) in &mut order {
                         if node == link {
@@ -96,7 +96,7 @@ fn rm_equal(doc: &Document) {
 fn group_to_parent(doc: &Document) {
     let mut nodes: Vec<Node> = doc.descendants()
                                   .filter(|n| n.is_gradient())
-                                  .filter(|n| !n.has_attribute(AId::XlinkHref))
+                                  .filter(|n| !n.has_attribute(("xlink", AId::Href)))
                                   .filter(|n| n.linked_nodes().all(|l| l.is_gradient()))
                                   .collect();
 

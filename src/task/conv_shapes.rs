@@ -71,7 +71,9 @@ fn convert_line(node: &mut Node) {
 
     node.set_attribute((AId::D, path));
     node.set_tag_name(EId::Path);
-    node.remove_attributes(&[AId::X1, AId::Y1, AId::X2, AId::Y2]);
+    for aid in &[AId::X1, AId::Y1, AId::X2, AId::Y2] {
+        node.remove_attribute(*aid)
+    }
 }
 
 fn convert_rect(node: &mut Node) {
@@ -116,7 +118,9 @@ fn convert_rect(node: &mut Node) {
 
     node.set_attribute((AId::D, path));
     node.set_tag_name(EId::Path);
-    node.remove_attributes(&[AId::X, AId::Y, AId::Rx, AId::Ry, AId::Width, AId::Height]);
+    for aid in &[AId::X, AId::Y, AId::Rx, AId::Ry, AId::Width, AId::Height] {
+        node.remove_attribute(*aid)
+    }
 }
 
 fn convert_polyline(node: &mut Node) {
@@ -140,7 +144,7 @@ fn convert_polygon(node: &mut Node) {
         None => return,
     };
 
-    path.d.push(path::Segment::new_close_path());
+    path.push(path::Segment::new_close_path());
 
     node.set_tag_name(EId::Path);
     node.set_attribute((AId::D, path));
@@ -152,26 +156,33 @@ fn points_to_path(node: &Node) -> Option<path::Path> {
 
     let attrs = node.attributes();
 
-    let points = if let Some(&AttributeValue::NumberList(ref v)) = attrs.get_value(AId::Points) {
+    let points = if let Some(&AttributeValue::Points(ref v)) = attrs.get_value(AId::Points) {
         v
     } else {
         return None;
     };
 
-    // Points with an odd count of coordinates must be fixed in fix_attrs::fix_poly.
-    debug_assert_eq!(points.len() % 2, 0);
-
-    let mut i = 0;
-    while i < points.len() {
+    for (i, p) in points.iter().enumerate() {
         let seg = if i == 0 {
-            path::Segment::new_move_to(points[i], points[i + 1])
+            path::Segment::new_move_to(p.0, p.1)
         } else {
-            path::Segment::new_line_to(points[i], points[i + 1])
+            path::Segment::new_line_to(p.0, p.1)
         };
-        path.d.push(seg);
 
-        i += 2;
+        path.push(seg);
     }
+
+//    let mut i = 0;
+//    while i < points.len() {
+//        let seg = if i == 0 {
+//            path::Segment::new_move_to(points[i], points[i + 1])
+//        } else {
+//            path::Segment::new_line_to(points[i], points[i + 1])
+//        };
+//        path.push(seg);
+//
+//        i += 2;
+//    }
 
     Some(path)
 }

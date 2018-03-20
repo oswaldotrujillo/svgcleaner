@@ -50,18 +50,18 @@ pub fn fix_m(path: &mut Path) {
     let mut mx = 0.0;
     let mut my = 0.0;
     let mut i = 1;
-    while i < path.d.len() {
-        let prev_cmd = path.d[i - 1].cmd();
-        let curr_cmd = path.d[i].cmd();
+    while i < path.len() {
+        let prev_cmd = path[i - 1].cmd();
+        let curr_cmd = path[i].cmd();
 
-        if let &SegmentData::MoveTo { x, y } = path.d[i - 1].data() {
+        if let &SegmentData::MoveTo { x, y } = path[i - 1].data() {
             mx = x;
             my = y;
         }
 
         if prev_cmd == Command::ClosePath {
             if curr_cmd != Command::MoveTo {
-                path.d.insert(i, Segment::new_move_to(mx, my));
+                path.insert(i, Segment::new_move_to(mx, my));
             }
         }
 
@@ -73,9 +73,9 @@ pub fn fix_m(path: &mut Path) {
 // to simplify processing.
 pub fn convert_hv_to_l(path: &mut Path) {
     let mut i = 1;
-    while i < path.d.len() {
-        let prev_seg = path.d[i - 1];
-        let curr_seg = &mut path.d[i];
+    while i < path.len() {
+        let prev_seg = path[i - 1];
+        let curr_seg = &mut path[i];
 
         // All segments must be absolute.
         debug_assert!(prev_seg.absolute);
@@ -101,8 +101,8 @@ pub fn convert_l_to_hv(path: &mut Path) {
     let mut prev_y = 0.0;
 
     let mut i = 0;
-    while i < path.d.len() {
-        let seg = &mut path.d[i];
+    while i < path.len() {
+        let seg = &mut path[i];
 
         // All segments must be absolute.
         debug_assert!(seg.absolute);
@@ -135,10 +135,10 @@ pub fn convert_l_to_hv(path: &mut Path) {
 
 fn _convert_segments(path: &mut Path, is_changed: &mut bool) {
     let mut i = 1;
-    while i < path.d.len() {
-        let prev_seg = path.d[i - 1];
+    while i < path.len() {
+        let prev_seg = path[i - 1];
         let (prev_x, prev_y) = utils::resolve_xy(path, i - 1);
-        let curr_seg = &mut path.d[i];
+        let curr_seg = &mut path[i];
         match *curr_seg.data() {
             SegmentData::CurveTo { x1, y1, x2, y2, x, y } => {
                 let is_vlineto = || {

@@ -47,20 +47,20 @@ pub fn fix_xmlns_attribute(doc: &Document, rm_unused: bool) {
             break;
         }
 
-        if node.has_attribute(AId::XlinkHref) {
+        if node.has_attribute(("xlink", AId::Href)) {
             has_links = true;
             break;
         }
     }
 
-    let has_xlink = svg.has_attribute(AId::XmlnsXlink);
+    let has_xlink = svg.has_attribute(("xmlns", AId::Xlink));
 
     if !has_links && rm_unused && has_xlink {
         // Remove if no links are used.
-        svg.remove_attribute(AId::XmlnsXlink);
+        svg.remove_attribute(("xmlns", AId::Xlink));
     } else if has_links && !has_xlink {
         // Set if needed.
-        svg.set_attribute((AId::XmlnsXlink, "http://www.w3.org/1999/xlink"));
+        svg.set_attribute((("xmlns", AId::Xlink), "http://www.w3.org/1999/xlink"));
     }
 }
 

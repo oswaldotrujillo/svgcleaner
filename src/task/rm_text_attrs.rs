@@ -48,7 +48,6 @@ static TEXT_ATTRIBUTES: &'static [AId] = &[
     AId::TextDecoration,
     AId::WordSpacing,
     AId::WritingMode,
-    AId::XmlSpace,
 ];
 
 pub fn remove_text_attributes(doc: &Document) {
@@ -65,7 +64,10 @@ pub fn remove_text_attributes(doc: &Document) {
     if !has_text {
         for (id, mut node) in doc.descendants().svg() {
             if id == EId::FontFace {
-                node.remove_attributes(TEXT_ATTRIBUTES);
+                for aid in TEXT_ATTRIBUTES {
+                    node.remove_attribute(*aid)
+                }
+                node.remove_attribute(("xml", AId::Space))
             }
         }
     }
@@ -98,7 +100,9 @@ fn _remove_text_attributes(parent: &Node) -> bool {
             let can_rm = _remove_text_attributes(&node);
             if can_rm {
                 if !node.is_tag_name(EId::FontFace) {
-                    node.remove_attributes(TEXT_ATTRIBUTES);
+                    for aid in TEXT_ATTRIBUTES {
+                        node.remove_attribute(*aid);
+                    }
                 }
             } else {
                 no_td = false;
@@ -113,8 +117,11 @@ fn _remove_text_attributes(parent: &Node) -> bool {
 
             if    _no_td
                && !node.is_tag_name(EId::FontFace)
-               && !is_linked_text(&node) {
-                node.remove_attributes(TEXT_ATTRIBUTES);
+               && !is_linked_text(&node)
+            {
+                for aid in TEXT_ATTRIBUTES {
+                    node.remove_attribute(*aid);
+                }
             }
 
             if !_no_td {
@@ -150,7 +157,7 @@ fn is_linked_text(node: &Node) -> bool {
         // We use 'attributes()' method instead of 'attribute()',
         // because 'xlink:href' can contain base64 data, which will be expensive to copy.
         let attrs = node.attributes();
-        if let Some(value) = attrs.get_value(AId::XlinkHref) {
+        if let Some(value) = attrs.get_value(("xlink", AId::Href)) {
             if let AttributeValue::Link(ref link) = *value {
                 return link.descendants().any(|n| n.node_type() == NodeType::Text);
             }
@@ -174,7 +181,7 @@ fn _remove_xml_space(parent: &Node) {
         //
         // xml:space=default will be removed by remove_default_attributes.
         let mut has_preserve = false;
-        if let Some(&AttributeValue::String(ref s)) = node.attributes().get_value(AId::XmlSpace) {
+        if let Some(&AttributeValue::String(ref s)) = node.attributes().get_value(("xml", AId::Space)) {
             if s == "preserve" {
                 has_preserve = true;
             }
@@ -198,7 +205,7 @@ fn _remove_xml_space(parent: &Node) {
             }
 
             if !has_spaces {
-                node.remove_attribute(AId::XmlSpace);
+                node.remove_attribute(("xml", AId::Space));
             }
 
             // Go deeper.
@@ -206,7 +213,7 @@ fn _remove_xml_space(parent: &Node) {
         } else {
             // If element doesn't have children than xml:space is useless
             // and we ca remove it.
-            node.remove_attribute(AId::XmlSpace);
+            node.remove_attribute(("xml", AId::Space));
         }
     }
 }

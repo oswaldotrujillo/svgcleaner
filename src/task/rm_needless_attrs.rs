@@ -70,7 +70,7 @@ fn process_clip_path(node: &Node) {
 
         let mut ids = Vec::new();
         for (id, attr) in child.attributes().iter_svg() {
-            if attr.is_fill() || attr.is_stroke() || attr.has_id(AId::Opacity) {
+            if attr.is_fill() || attr.is_stroke() || attr.has_id("", AId::Opacity) {
                 ids.push(id);
             }
         }
@@ -85,12 +85,12 @@ fn process_rect(node: &mut Node) {
     // Remove all non-rect attributes.
     node.attributes_mut().retain(|a| {
            is_basic_shapes_attr(a)
-        || a.has_id(AId::X)
-        || a.has_id(AId::Y)
-        || a.has_id(AId::Width)
-        || a.has_id(AId::Height)
-        || a.has_id(AId::Rx)
-        || a.has_id(AId::Ry)
+        || a.has_id("", AId::X)
+        || a.has_id("", AId::Y)
+        || a.has_id("", AId::Width)
+        || a.has_id("", AId::Height)
+        || a.has_id("", AId::Rx)
+        || a.has_id("", AId::Ry)
     });
 }
 
@@ -98,9 +98,9 @@ fn process_circle(node: &mut Node) {
     // Remove all non-circle attributes.
     node.attributes_mut().retain(|a| {
            is_basic_shapes_attr(a)
-        || a.has_id(AId::Cx)
-        || a.has_id(AId::Cy)
-        || a.has_id(AId::R)
+        || a.has_id("", AId::Cx)
+        || a.has_id("", AId::Cy)
+        || a.has_id("", AId::R)
     });
 }
 
@@ -108,10 +108,10 @@ fn process_ellipse(node: &mut Node) {
     // Remove all non-ellipse attributes.
     node.attributes_mut().retain(|a| {
            is_basic_shapes_attr(a)
-        || a.has_id(AId::Cx)
-        || a.has_id(AId::Cy)
-        || a.has_id(AId::Rx)
-        || a.has_id(AId::Ry)
+        || a.has_id("", AId::Cx)
+        || a.has_id("", AId::Cy)
+        || a.has_id("", AId::Rx)
+        || a.has_id("", AId::Ry)
     });
 }
 
@@ -119,10 +119,10 @@ fn process_line(node: &mut Node) {
     // Remove all non-line attributes.
     node.attributes_mut().retain(|a| {
            is_basic_shapes_attr(a)
-        || a.has_id(AId::X1)
-        || a.has_id(AId::Y1)
-        || a.has_id(AId::X2)
-        || a.has_id(AId::Y2)
+        || a.has_id("", AId::X1)
+        || a.has_id("", AId::Y1)
+        || a.has_id("", AId::X2)
+        || a.has_id("", AId::Y2)
     });
 }
 
@@ -130,7 +130,7 @@ fn process_poly(node: &mut Node) {
     // Remove all non-polyline/polygon attributes.
     node.attributes_mut().retain(|a| {
            is_basic_shapes_attr(a)
-        || a.has_id(AId::Points)
+        || a.has_id("", AId::Points)
     });
 }
 
@@ -142,10 +142,10 @@ fn is_basic_shapes_attr(a: &Attribute) -> bool {
     || a.is_core()
     || a.is_graphical_event()
     || a.is_presentation()
-    || a.has_id(AId::Class)
-    || a.has_id(AId::Style)
-    || a.has_id(AId::ExternalResourcesRequired)
-    || a.has_id(AId::Transform)
+    || a.has_id("", AId::Class)
+    || a.has_id("", AId::Style)
+    || a.has_id("", AId::ExternalResourcesRequired)
+    || a.has_id("", AId::Transform)
 }
 
 fn process_fill(node: &mut Node) {
@@ -213,7 +213,9 @@ fn process_stroke(node: &mut Node) {
         if is_invisible(node) {
             // Remove all stroke-based attributes if stroke is invisible.
             node.remove_attribute(AId::Stroke);
-            node.remove_attributes(STROKE_ATTRIBUTES);
+            for aid in STROKE_ATTRIBUTES {
+                node.remove_attribute(*aid);
+            }
 
             // If the parent element defines stroke - we must mark current element
             // with 'none' stroke.
@@ -229,7 +231,9 @@ fn process_stroke(node: &mut Node) {
                 if av == AttributeValue::PredefValue(ValueId::None) {
                     // Remove all stroke-based attributes, except 'stroke' itself,
                     // if the stroke is 'none'.
-                    node.remove_attributes(STROKE_ATTRIBUTES);
+                    for aid in STROKE_ATTRIBUTES {
+                        node.remove_attribute(*aid);
+                    }
 
                     // If the parent element doesn't define 'stroke' - we can remove it
                     // from the current element.

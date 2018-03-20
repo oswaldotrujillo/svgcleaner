@@ -28,7 +28,7 @@ pub fn regroup_gradient_stops(doc: &mut Document) {
     let mut nodes: Vec<Node> = doc.descendants()
         .filter(|n| n.is_gradient())
         .filter(|n| n.has_children())
-        .filter(|n| !n.has_attribute(AId::XlinkHref))
+        .filter(|n| !n.has_attribute(("xlink", AId::Href)))
         .collect();
 
     let mut is_changed = false;
@@ -64,7 +64,7 @@ pub fn regroup_gradient_stops(doc: &mut Document) {
                 c.detach();
                 new_lg.append(&c);
             }
-            node1.set_attribute((AId::XlinkHref, new_lg.clone()));
+            node1.set_attribute((("xlink", AId::Href), new_lg.clone()));
 
             node1.insert_before(&new_lg);
 
@@ -73,7 +73,7 @@ pub fn regroup_gradient_stops(doc: &mut Document) {
                     let mut c = jn.first_child().unwrap();
                     c.remove();
                 }
-                jn.set_attribute((AId::XlinkHref, new_lg.clone()));
+                jn.set_attribute((("xlink", AId::Href), new_lg.clone()));
             }
 
             join_nodes.clear();
@@ -144,8 +144,8 @@ mod tests {
         <stop offset='0'/>
         <stop offset='1'/>
     </linearGradient>
-    <linearGradient id='lg1' x1='50' xlink:href='#lg3'/>
-    <linearGradient id='lg2' x1='100' xlink:href='#lg3'/>
+    <linearGradient id='lg1' xlink:href='#lg3' x1='50'/>
+    <linearGradient id='lg2' xlink:href='#lg3' x1='100'/>
 </svg>
 ");
 
@@ -173,14 +173,14 @@ mod tests {
         <stop offset='0'/>
         <stop offset='1'/>
     </linearGradient>
-    <linearGradient id='lg1' x1='50' xlink:href='#lg5'/>
+    <linearGradient id='lg1' xlink:href='#lg5' x1='50'/>
     <linearGradient id='lg6'>
         <stop offset='0.5'/>
         <stop offset='1'/>
     </linearGradient>
-    <linearGradient id='lg3' x1='50' xlink:href='#lg6'/>
-    <linearGradient id='lg2' x1='100' xlink:href='#lg5'/>
-    <linearGradient id='lg4' x1='100' xlink:href='#lg6'/>
+    <linearGradient id='lg3' xlink:href='#lg6' x1='50'/>
+    <linearGradient id='lg2' xlink:href='#lg5' x1='100'/>
+    <linearGradient id='lg4' xlink:href='#lg6' x1='100'/>
 </svg>
 ");
 

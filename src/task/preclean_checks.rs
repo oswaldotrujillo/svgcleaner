@@ -97,7 +97,7 @@ fn check_for_conditional_attributes(doc: &Document) -> Result<()> {
 
 fn check_for_external_xlink(doc: &Document) -> Result<()> {
     for (_, node) in doc.descendants().svg() {
-        if !node.has_attribute(AId::XlinkHref) {
+        if !node.has_attribute(("xlink", AId::Href)) {
             continue;
         }
 
@@ -110,7 +110,7 @@ fn check_for_external_xlink(doc: &Document) -> Result<()> {
         }
 
         let attrs = node.attributes();
-        if let AttributeValue::String(ref s) = *attrs.get_value(AId::XlinkHref).unwrap() {
+        if let AttributeValue::String(ref s) = *attrs.get_value(("xlink", AId::Href)).unwrap() {
             return Err(ErrorKind::ExternalHrefIsNotSupported(s.clone()).into());
         }
     }

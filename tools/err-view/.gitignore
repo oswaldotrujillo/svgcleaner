@@ -1,0 +1,5 @@
+.qmake.stash
+Makefile
+err_view
+err_view.pro.user
+ui_*.h

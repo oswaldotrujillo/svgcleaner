@@ -34,8 +34,8 @@ pub fn remove_unused_segments(path: &mut Path) {
         is_changed = false;
 
         // Path with one segment is useless.
-        if path.d.len() == 1 {
-            path.d.clear();
+        if path.len() == 1 {
+            path.clear();
             break;
         }
 
@@ -47,7 +47,7 @@ pub fn remove_unused_segments(path: &mut Path) {
         if remove_equal(path) { is_changed = true; }
         remove_zero_lenght(path, &mut is_changed);
 
-        if path.d.is_empty() {
+        if path.is_empty() {
             break;
         }
     }
@@ -63,21 +63,21 @@ enum DrainMode {
 fn drain_by_pair<P>(path: &mut Path, mode: DrainMode, p: P) -> bool
     where P: Fn(&Segment, &Segment) -> bool
 {
-    let old_len = path.d.len();
+    let old_len = path.len();
 
     let mut i = 1;
-    while i < path.d.len() {
-        let prev = path.d[i - 1];
-        let curr = path.d[i];
+    while i < path.len() {
+        let prev = path[i - 1];
+        let curr = path[i];
         if p(&prev, &curr) {
             let step_back = match mode {
                 DrainMode::Single => {
-                    path.d.remove(i - 1);
+                    path.remove(i - 1);
                     1
                 }
                 DrainMode::Both => {
-                    path.d.remove(i - 1);
-                    path.d.remove(i - 1);
+                    path.remove(i - 1);
+                    path.remove(i - 1);
 
                     if i > 1 { 2 } else { 0 }
                 }
@@ -89,7 +89,7 @@ fn drain_by_pair<P>(path: &mut Path, mode: DrainMode, p: P) -> bool
         i += 1;
     }
 
-    old_len != path.d.len()
+    old_len != path.len()
 }
 
 // Remove continuous MoveTo segments since they are pointless.
@@ -127,8 +127,8 @@ fn remove_equal(path: &mut Path) -> bool {
 // If segment moved to the same position as current - remove it.
 fn remove_zero_lenght(path: &mut Path, is_changed: &mut bool) {
     let mut i = 1;
-    while i < path.d.len() {
-        let curr = path.d[i];
+    while i < path.len() {
+        let curr = path[i];
         let (px, py) = utils::resolve_xy(path, i - 1);
 
         let is_equal = match curr.cmd() {
@@ -140,7 +140,7 @@ fn remove_zero_lenght(path: &mut Path, is_changed: &mut bool) {
         };
 
         if is_equal {
-            path.d.remove(i);
+            path.remove(i);
             i -= 1;
             *is_changed = true;
         }
@@ -150,27 +150,27 @@ fn remove_zero_lenght(path: &mut Path, is_changed: &mut bool) {
 }
 
 fn process_lz(path: &mut Path, is_changed: &mut bool) {
-    if path.d.is_empty() {
+    if path.is_empty() {
         return;
     }
 
     let mut i = 1;
-    let mut mx = path.d[0].x().unwrap();
-    let mut my = path.d[0].y().unwrap();
-    while i < path.d.len() {
-        let curr_cmd = path.d[i].cmd();
+    let mut mx = path[0].x().unwrap();
+    let mut my = path[0].y().unwrap();
+    while i < path.len() {
+        let curr_cmd = path[i].cmd();
 
         // If current segment is ClosePath and previous segment is line-based segment
         // which points to previous MoveTo - then this line-based segment is pointless,
         // because ClosePath will render the same line by itself.
         if curr_cmd == Command::ClosePath {
             let prev_i = i - 1;
-            let prev = path.d[prev_i];
+            let prev = path[prev_i];
             if is_line_based(prev.cmd()) {
                 let (x, y) = utils::resolve_xy(path, prev_i);
                 if mx.fuzzy_eq(&x) && my.fuzzy_eq(&y) {
                     // Remove this line-based segment.
-                    path.d.remove(prev_i);
+                    path.remove(prev_i);
                     i -= 1;
                     *is_changed = true;
                     continue;
@@ -180,15 +180,15 @@ fn process_lz(path: &mut Path, is_changed: &mut bool) {
 
         // If line-based segment is followed by MoveTo or located at the end of the path
         // and points to previous MoveTo - than we can replace it with ClosePath.
-        let is_last = i == path.d.len() - 1 && curr_cmd != Command::ClosePath;
+        let is_last = i == path.len() - 1 && curr_cmd != Command::ClosePath;
         if curr_cmd == Command::MoveTo || is_last {
             let prev_i = if is_last { i } else { i - 1 };
-            let prev = path.d[prev_i];
+            let prev = path[prev_i];
             if is_line_based(prev.cmd()) {
                 let (x, y) = utils::resolve_xy(path, prev_i);
                 if mx.fuzzy_eq(&x) && my.fuzzy_eq(&y) {
                     // Replace line-based segment with ClosePath.
-                    path.d[prev_i] = Segment::new_close_path();
+                    path[prev_i] = Segment::new_close_path();
                     *is_changed = true;
                     continue;
                 }
@@ -197,8 +197,8 @@ fn process_lz(path: &mut Path, is_changed: &mut bool) {
 
         // Remember last MoveTo.
         if curr_cmd == Command::MoveTo {
-            mx = path.d[i].x().unwrap();
-            my = path.d[i].y().unwrap();
+            mx = path[i].x().unwrap();
+            my = path[i].y().unwrap();
         }
 
         i += 1;

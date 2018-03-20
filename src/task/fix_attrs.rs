@@ -124,7 +124,6 @@ mod test_rect {
 /// Fix `polyline` and `polygon` element attributes.
 ///
 /// - An empty `points` attribute will be removed
-/// - A `points` attribute with an odd number of coordinates will be truncated by one coordinate
 ///
 /// Details: https://www.w3.org/TR/SVG/shapes.html#PolylineElement
 /// https://www.w3.org/TR/SVG/shapes.html#PolygonElement
@@ -134,19 +133,10 @@ pub fn fix_poly_attributes(node: &mut Node) {
     let mut attrs_data = node.attributes_mut();
     let mut is_empty = false;
 
-    if let Some(points_value) = attrs_data.get_value_mut(AId::Points) {
-        if let AttributeValue::NumberList(ref mut p) = *points_value {
-            if p.is_empty() {
-                // remove if no points
+    if let Some(points_value) = attrs_data.get_value(AId::Points) {
+        if let AttributeValue::Points(ref p) = *points_value {
+            if p.len() < 2 {
                 is_empty = true;
-            } else if p.len() % 2 != 0 {
-                // remove last point if points count is odd
-                p.pop();
-
-                // remove if no points
-                if p.is_empty() {
-                    is_empty = true;
-                }
             }
         }
     }
@@ -185,7 +175,7 @@ mod test_poly {
     <polyline/>
 </svg>",
 "<svg>
-    <polyline points='5 6'/>
+    <polyline/>
     <polyline/>
     <polyline/>
     <polyline/>

@@ -34,7 +34,7 @@ pub fn resolve_use(doc: &Document) {
             continue;
         }
 
-        if let Some(value) = node.attributes().get_value(AId::XlinkHref) {
+        if let Some(value) = node.attributes().get_value(("xlink", AId::Href)) {
             if let AttributeValue::Link(ref link) = *value {
 
                 // Resolve elements that linked to elements inside 'defs'.
@@ -65,7 +65,7 @@ pub fn resolve_use(doc: &Document) {
 
     for (mut node, mut link) in nodes {
         // Unlink 'use'.
-        node.remove_attribute(AId::XlinkHref);
+        node.remove_attribute(("xlink", AId::Href));
 
         {
             // 'use' element support 'x', 'y' and 'transform' attributes and we should process them

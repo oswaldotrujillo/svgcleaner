@@ -536,7 +536,10 @@ fn move_nodes(attributes: &[Attribute], g_node: &mut Node, node_list: &mut [Node
 
     for node in node_list.iter_mut().skip(range.start).take(range.end - range.start + 1) {
         // Remove attributes from nodes.
-        node.remove_attributes(&attr_ids);
+        for aid in attr_ids.iter() {
+            node.remove_attribute(*aid);
+        }
+
         // Move them to the 'g' element.
         node.detach();
         g_node.append(node);

@@ -136,7 +136,7 @@ fn round_number(n: &mut f64, precision: usize) {
 fn round_path(path: &mut path::Path, precision: usize) {
     use svgdom::path::SegmentData;
 
-    for seg in &mut path.d {
+    for seg in path.iter_mut() {
         match *seg.data_mut() {
               SegmentData::MoveTo { ref mut x, ref mut y }
             | SegmentData::LineTo { ref mut x, ref mut y }

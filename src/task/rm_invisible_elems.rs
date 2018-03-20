@@ -97,7 +97,7 @@ fn is_valid_clip_path_elem(node: &Node) -> bool {
     }
 
     if node.is_tag_name(EId::Use) {
-        if let Some(av) = node.attributes().get_value(AId::XlinkHref) {
+        if let Some(av) = node.attributes().get_value(("xlink", AId::Href)) {
             if let AttributeValue::Link(ref link) = *av {
                 return is_valid_shape(link);
             }
@@ -111,7 +111,7 @@ fn is_valid_clip_path_elem(node: &Node) -> bool {
 fn process_paths(doc: &mut Document, is_any_removed: &mut bool) {
     fn is_invisible(node: &Node) -> bool {
         if let Some(&AttributeValue::Path(ref d)) = node.attributes().get_value(AId::D) {
-            d.d.is_empty()
+            d.is_empty()
         } else {
             // Not set or invalid value type.
             true
@@ -213,7 +213,7 @@ fn process_fe_color_matrix(doc: &mut Document) {
 
 // 'use' element without 'xlink:href' attribute is pointless.
 fn process_use(doc: &mut Document, is_any_removed: &mut bool) {
-    let c = doc.drain(|n| n.is_tag_name(EId::Use) && !n.has_attribute(AId::XlinkHref));
+    let c = doc.drain(|n| n.is_tag_name(EId::Use) && !n.has_attribute(("xlink", AId::Href)));
     if c != 0 {
         *is_any_removed = true;
     }
@@ -226,7 +226,7 @@ fn process_gradients(doc: &Document, is_any_removed: &mut bool) {
         // Gradient without children and link to other gradient is pointless.
         let iter = doc.descendants()
                       .filter(|n| n.is_gradient())
-                      .filter(|n| !n.has_children() && !n.has_attribute(AId::XlinkHref));
+                      .filter(|n| !n.has_children() && !n.has_attribute(("xlink", AId::Href)));
 
         for n in iter {
             for mut link in n.linked_nodes().collect::<Vec<Node>>() {
@@ -246,7 +246,7 @@ fn process_gradients(doc: &Document, is_any_removed: &mut bool) {
         // defined for that gradient stop.'
         let iter = doc.descendants()
                       .filter(|n| n.is_gradient())
-                      .filter(|n| n.children().count() == 1 && !n.has_attribute(AId::XlinkHref));
+                      .filter(|n| n.children().count() == 1 && !n.has_attribute(("xlink", AId::Href)));
 
         for n in iter {
             let stop = n.first_child().unwrap();

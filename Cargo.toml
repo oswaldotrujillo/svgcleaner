@@ -9,6 +9,7 @@ documentation = "https://github.com/RazrFalcon/svgcleaner/blob/master/docs/svgcl
 repository = "https://github.com/RazrFalcon/svgcleaner"
 readme = "README.rst"
 categories = ["multimedia::images"]
+exclude = ["docs/**/*", "tools/**/*"]
 
 [badges]
 travis-ci = { repository = "RazrFalcon/svgcleaner" }
@@ -32,9 +33,9 @@ fern = "0.5"
 # git = "https://github.com/RazrFalcon/libsvgdom.git"
 # branch = "devel"
 # local copy
-# path = "../svgdom"
+path = "../svgdom"
 # from crates
-version = "0.10"
+# version = "0.10"
 
 [dependencies.error-chain]
 version = "0.11"

@@ -61,7 +61,7 @@ pub fn remove_unused_coordinates(doc: &Document) {
 
                     // Process only 'radialGradient' which is not linked
                     // to the other 'radialGradient'.
-                    if let Some(&AttributeValue::Link(ref link)) = attrs.get_value(AId::XlinkHref) {
+                    if let Some(&AttributeValue::Link(ref link)) = attrs.get_value(("xlink", AId::Href)) {
                         if link.is_tag_name(EId::RadialGradient) {
                             continue;
                         }

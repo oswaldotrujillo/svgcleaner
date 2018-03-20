@@ -104,8 +104,8 @@ fn is_gradient_attrs_equal(node1: &Node, node2: &Node, attrs: &[AId]) -> bool {
 
     check_attr!(&attrs1, &attrs2, AId::GradientTransform, Transform::default());
 
-    if attrs1.contains(AId::XlinkHref) && attrs2.contains(AId::XlinkHref) {
-        if attrs1.get_value(AId::XlinkHref).unwrap() != attrs2.get_value(AId::XlinkHref).unwrap() {
+    if attrs1.contains(("xlink", AId::Href)) && attrs2.contains(("xlink", AId::Href)) {
+        if attrs1.get_value(("xlink", AId::Href)).unwrap() != attrs2.get_value(("xlink", AId::Href)).unwrap() {
             return false;
         }
     }

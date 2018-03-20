@@ -70,7 +70,7 @@ pub fn process_paths(doc: &Document, opt: &CleaningOptions) {
 }
 
 fn process_path(path: &mut Path, has_marker: bool, ts: Option<Transform>, opt: &CleaningOptions) {
-    if path.d.is_empty() {
+    if path.is_empty() {
         return;
     }
 
@@ -86,7 +86,7 @@ fn process_path(path: &mut Path, has_marker: bool, ts: Option<Transform>, opt: &
     if opt.remove_unused_segments && !has_marker {
         rm_unused::remove_unused_segments(path);
 
-        if path.d.is_empty() {
+        if path.is_empty() {
             return;
         }
     }
@@ -117,7 +117,7 @@ mod utils {
     pub fn resolve_xy(path: &Path, start: usize) -> (f64, f64) {
         let mut i = start;
         loop {
-            let seg = &path.d[i];
+            let seg = &path[i];
 
             // H and V should be already converted into L,
             // so we check only for Z.

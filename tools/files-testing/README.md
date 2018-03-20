@@ -13,7 +13,7 @@ Clean all files from the selected folder and check that all of them are cleaned 
 ## Usage
 
 ```bash
-stats \
+cargo run -- \
       # path to folder where all temp files will be generated
       --workdir=/var/svg/svg/ \
       --input-data=/path_to_dir_with_svg_files \
@@ -25,6 +25,7 @@ stats \
 ```
 
 ## Files for testing
+
  - http://www.w3.org/Graphics/SVG/Test/20110816/archives/W3C_SVG_11_TestSuite.tar.gz
  - https://sourceforge.net/projects/openiconlibrary/
  - https://openclipart.org/downloads/

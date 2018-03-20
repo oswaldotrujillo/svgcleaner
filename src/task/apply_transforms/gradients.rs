@@ -49,7 +49,7 @@ pub fn apply_transform_to_gradients(doc: &Document) {
         // After applying the transform - we will remove it, but if linked gradient
         // has a transform - it will be inherited. So we will get double transform.
         // Which will lead to an error.
-        if let Some(&AttributeValue::Link(ref link)) = node.attributes().get_value(AId::XlinkHref) {
+        if let Some(&AttributeValue::Link(ref link)) = node.attributes().get_value(("xlink", AId::Href)) {
             if link.has_attribute(AId::GradientTransform) {
                 continue;
             }

@@ -48,7 +48,7 @@ pub fn remove_dupl_fe_gaussian_blur(doc: &Document) {
         }
 
         // Filter should not be linked.
-        if node.has_attribute(AId::XlinkHref) {
+        if node.has_attribute(("xlink", AId::Href)) {
             continue;
         }
 

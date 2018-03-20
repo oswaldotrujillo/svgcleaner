@@ -19,7 +19,7 @@ use libtest::*;
 // NOTE: This app uses a panic-based error processing.
 //       It's bad, but simpler for such small applications like this.
 
-// TODO: collect rerendered images
+// TODO: collect rendered images
 
 macro_rules! dir_iter {
     ($input_dir:expr) => (

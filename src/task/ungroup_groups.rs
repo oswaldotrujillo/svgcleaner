@@ -178,7 +178,7 @@ fn ungroup_group(g: &mut Node) {
                 continue;
             }
 
-            if !child.has_attribute(aid) {
+            if !child.has_attribute(attr.name.as_ref()) {
                 child.set_attribute(attr.clone());
             }
         }

@@ -63,6 +63,34 @@
         {
             "name": "text-ws-01-t.svg",
             "valid_ae": 746
+        },
+        {
+            "name": "animate-elem-30-t.svg",
+            "valid_ae": 1112
+        },
+        {
+            "name": "animate-elem-03-t.svg",
+            "valid_ae": 668
+        },
+        {
+            "name": "animate-elem-05-t.svg",
+            "valid_ae": 495
+        },
+        {
+            "name": "animate-elem-06-t.svg",
+            "valid_ae": 362
+        },
+        {
+            "name": "animate-elem-07-t.svg",
+            "valid_ae": 422
+        },
+        {
+            "name": "animate-elem-41-t.svg",
+            "valid_ae": 620
+        },
+        {
+            "name": "animate-elem-89-t.svg",
+            "valid_ae": 795
         }
     ],
     "ignore": [

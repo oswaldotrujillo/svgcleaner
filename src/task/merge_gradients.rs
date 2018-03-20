@@ -66,9 +66,9 @@ fn _merge_gradients(doc: &Document, nodes: &mut Vec<Node>) {
     for mut node in iter {
         let linked_node;
 
-        if let Some(av) = node.attributes().get_value(AId::XlinkHref) {
+        if let Some(av) = node.attributes().get_value(("xlink", AId::Href)) {
             if let AttributeValue::Link(ref link) = *av {
-                if link.uses_count() == 1 && !link.has_attribute(AId::XlinkHref) {
+                if link.uses_count() == 1 && !link.has_attribute(("xlink", AId::Href)) {
                     linked_node = link.clone();
                 } else {
                     continue;
@@ -89,7 +89,7 @@ fn _merge_gradients(doc: &Document, nodes: &mut Vec<Node>) {
             }
         }
 
-        node.remove_attribute(AId::XlinkHref);
+        node.remove_attribute(("xlink", AId::Href));
 
         {
             // Now we need to move attributes from removed gradient,
