@@ -30,10 +30,10 @@ fern = "0.5"
 
 [dependencies.svgdom]
 # latest
-# git = "https://github.com/RazrFalcon/libsvgdom.git"
-# branch = "devel"
+git = "https://github.com/RazrFalcon/libsvgdom"
+rev = "c390d40"
 # local copy
-path = "../svgdom"
+# path = "../svgdom"
 # from crates
 # version = "0.10"
 
